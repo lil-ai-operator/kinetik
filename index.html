@@ -145,7 +145,7 @@ p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;ma
 <div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,10,10,0.7);backdrop-filter:blur(2px);border-radius:16px;z-index:10">
 <h2 style="margin-bottom:8px">Unlock your full report</h2>
 <p style="font-size:14px;color:#888;margin-bottom:16px">Your personalised AI clarity report is ready</p>
-<button class="btn pulse" onclick="unlockReport()">Unlock — £99</button>
+<button class="btn pulse" onclick="unlockReport()">Unlock Full Report — £99 <span style=\"font-size:12px;opacity:0.7\">(Beta · Click to test)</span></button>
 <p style="font-size:12px;color:#555;margin-top:8px">One-time payment · Instant access</p>
 </div>
 </div>
@@ -181,7 +181,8 @@ p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;ma
 <script>
 const answers={};
 let fullReport=null;
-const API_URL='https://kinetik-ignition.lil-ai-operator.workers.dev/generate-report';
+const API_URL=''; // Will be set when backend is deployed
+const TEST_MODE=true; // Bypasses payment for testing
 
 function pick(el,q,val){
 document.querySelectorAll('#'+q+' .option').forEach(o=>o.classList.remove('selected'));
@@ -242,8 +243,12 @@ const iv=setInterval(()=>{num+=1;if(num>=score){num=score;clearInterval(iv)}numE
 }
 
 function unlockReport(){
-// TODO: Replace with real Stripe checkout
-// For now, show the full report directly
+if(TEST_MODE){
+showFullReport();
+return;
+}
+// TODO: Stripe Checkout redirect
+// Stripe.redirectToCheckout({sessionId:'...'})
 showFullReport();
 }
 
