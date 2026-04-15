@@ -17,9 +17,9 @@ h2{font-size:clamp(22px,5vw,36px);font-weight:800;line-height:1.2;margin-bottom:
 p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;margin-bottom:24px}
 .btn{background:linear-gradient(135deg,#f97316,#ef4444);color:#fff;border:none;padding:16px 40px;font-size:18px;font-weight:700;border-radius:12px;cursor:pointer;transition:all 0.3s ease;margin:8px;font-family:'Inter',sans-serif}
 .btn:hover{transform:scale(1.05);box-shadow:0 8px 30px rgba(249,115,22,0.3)}
+.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
 .btn-secondary{background:transparent;border:2px solid #333;color:#aaa;padding:14px 32px;font-size:16px;font-weight:600;border-radius:12px;cursor:pointer;transition:all 0.3s ease;margin:8px;font-family:'Inter',sans-serif}
 .btn-secondary:hover{border-color:#f97316;color:#f97316}
-.btn-secondary.selected{border-color:#f97316;color:#f97316;background:rgba(249,115,22,0.1)}
 .options{display:flex;flex-direction:column;gap:12px;width:100%;max-width:400px;margin:20px 0}
 .option{background:#151515;border:2px solid #222;border-radius:12px;padding:16px 20px;cursor:pointer;transition:all 0.3s ease;text-align:left;font-size:16px;color:#ccc}
 .option:hover{border-color:#444;background:#1a1a1a}
@@ -42,9 +42,15 @@ p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;ma
 .features{display:flex;flex-direction:column;gap:12px;text-align:left;max-width:400px;margin:20px 0}
 .feature{display:flex;align-items:flex-start;gap:12px;font-size:15px;color:#bbb}
 .feature-icon{font-size:20px;flex-shrink:0}
-.cta-price{font-size:14px;color:#666;margin-top:8px}
-.cta-price span{color:#f97316;font-weight:700;font-size:18px}
 .footer{margin-top:40px;font-size:12px;color:#444;letter-spacing:2px;text-transform:uppercase}
+.report-section{text-align:left;max-width:480px;width:100%;margin:12px 0;padding:16px;background:#151515;border-radius:12px;border-left:3px solid #f97316}
+.report-section h3{font-size:14px;color:#f97316;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.report-section p{font-size:15px;color:#ccc;margin:0;line-height:1.5}
+.execution-item{display:flex;align-items:flex-start;gap:8px;margin:8px 0;font-size:14px;color:#bbb}
+.execution-label{color:#f97316;font-weight:700;flex-shrink:0}
+.loading-dots::after{content:'';animation:dots 1.5s infinite}
+@keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}100%{content:''}}
+.glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px;margin:16px 0;max-width:480px;width:100%}
 </style>
 </head>
 <body>
@@ -54,12 +60,12 @@ p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;ma
 <div class="stage active" id="stage0">
 <div class="kinetik-logo"><span>K</span>inetik</div>
 <h1>Bring your real life back online.</h1>
-<p>Answer 4 quick questions. See where you really stand. Discover what could change.</p>
+<p>Answer 4 questions. Get an AI-powered clarity report with your drift profile, lane recommendation, and execution map.</p>
 <button class="btn" onclick="goStage(1)">Start →</button>
-<div class="footer">Takes 2 minutes</div>
+<div class="footer">Takes 2 minutes · AI-generated report</div>
 </div>
 
-<!-- STAGE 1: Q1 -->
+<!-- STAGE 1-4: Questions -->
 <div class="stage" id="stage1">
 <div class="brand">Question 1 of 4</div>
 <h2>How many projects or ideas are you juggling right now?</h2>
@@ -72,7 +78,6 @@ p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;ma
 <button class="btn" id="next1" style="opacity:0.3;pointer-events:none" onclick="goStage(2)">Next →</button>
 </div>
 
-<!-- STAGE 2: Q2 -->
 <div class="stage" id="stage2">
 <div class="brand">Question 2 of 4</div>
 <h2>When did you last feel truly clear about your direction?</h2>
@@ -85,7 +90,6 @@ p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;ma
 <button class="btn" id="next2" style="opacity:0.3;pointer-events:none" onclick="goStage(3)">Next →</button>
 </div>
 
-<!-- STAGE 3: Q3 -->
 <div class="stage" id="stage3">
 <div class="brand">Question 3 of 4</div>
 <h2>What's the pattern that keeps repeating?</h2>
@@ -98,7 +102,6 @@ p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;ma
 <button class="btn" id="next3" style="opacity:0.3;pointer-events:none" onclick="goStage(4)">Next →</button>
 </div>
 
-<!-- STAGE 4: Q4 -->
 <div class="stage" id="stage4">
 <div class="brand">Question 4 of 4</div>
 <h2>If you had one clear lane and a real plan, what would change?</h2>
@@ -108,55 +111,78 @@ p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;ma
 <div class="option" onclick="pick(this,'q4',3)"><span class="option-label">Money</span>I'd focus on revenue instead of ideas</div>
 <div class="option" onclick="pick(this,'q4',4)"><span class="option-label">Peace</span>The noise would stop and I'd feel alive again</div>
 </div>
-<button class="btn" id="next4" style="opacity:0.3;pointer-events:none" onclick="goStage(5)">See my results →</button>
+<button class="btn" id="next4" style="opacity:0.3;pointer-events:none" onclick="generateReport()">Generate my Ignition report →</button>
 </div>
 
-<!-- STAGE 5: Results -->
+<!-- STAGE 5: Loading -->
 <div class="stage" id="stage5">
 <div class="kinetik-logo"><span>K</span>inetik</div>
-<h2>Your Clarity Score</h2>
+<h2>Analysing your answers<span class="loading-dots"></span></h2>
+<p>Our AI is building your personalised clarity report.</p>
+</div>
+
+<!-- STAGE 6: Preview + Paywall -->
+<div class="stage" id="stage6">
+<div class="kinetik-logo"><span>K</span>inetik Ignition Report</div>
 <div class="score-ring">
 <svg><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#f97316"/><stop offset="100%" style="stop-color:#ef4444"/></linearGradient></defs><circle class="bg" cx="94" cy="94" r="90"/><circle class="fg" id="scoreArc" cx="94" cy="94" r="90"/></svg>
 <div class="score-number" id="scoreNum">0</div>
-<div class="score-label">out of 100</div>
+<div class="score-label">clarity score</div>
 </div>
-<div id="resultTags"></div>
-<p id="resultText"></p>
-<button class="btn" onclick="goStage(6)">See how Ignition changes this →</button>
+<div id="driftTag" class="result-tag" style="margin-bottom:16px"></div>
+
+<div class="glass" style="position:relative;overflow:hidden">
+<div style="filter:blur(4px);opacity:0.6;pointer-events:none;user-select:none" id="blurredReport">
+<div class="report-section"><h3>The Truth</h3><p id="truthPreview">Loading...</p></div>
+<div class="report-section"><h3>Dream Recovery</h3><p id="dreamPreview">Loading...</p></div>
+<div class="report-section"><h3>Your Lane</h3><p id="lanePreview">Loading...</p></div>
+<div class="report-section"><h3>Execution Map</h3>
+<div class="execution-item"><span class="execution-label">Today:</span><span id="execToday">Loading...</span></div>
+<div class="execution-item"><span class="execution-label">This week:</span><span id="execWeek">Loading...</span></div>
+<div class="execution-item"><span class="execution-label">This month:</span><span id="execMonth">Loading...</span></div>
+</div>
+</div>
+<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,10,10,0.7);backdrop-filter:blur(2px);border-radius:16px;z-index:10">
+<h2 style="margin-bottom:8px">Unlock your full report</h2>
+<p style="font-size:14px;color:#888;margin-bottom:16px">Your personalised AI clarity report is ready</p>
+<button class="btn pulse" onclick="unlockReport()">Unlock — £99</button>
+<p style="font-size:12px;color:#555;margin-top:8px">One-time payment · Instant access</p>
+</div>
+</div>
 </div>
 
-<!-- STAGE 6: The Pitch -->
-<div class="stage" id="stage6">
-<div class="kinetik-logo"><span>K</span>inetik Ignition</div>
-<h2>60 minutes to change your direction.</h2>
-<p>One session. We burn the fog, recover the dream, lock the lane, and build the map.</p>
-<div class="features">
-<div class="feature"><span class="feature-icon">🎯</span>Clarity Extraction — what really matters beneath the noise</div>
-<div class="feature"><span class="feature-icon">✨</span>Dream Recovery — reconnect to the future you actually want</div>
-<div class="feature"><span class="feature-icon">🔒</span>Lane Lock — kill dead options, commit to the strongest path</div>
-<div class="feature"><span class="feature-icon">🗺️</span>Execution Map — today, this week, this month — concrete moves</div>
-<div class="feature"><span class="feature-icon">📝</span>Written Debrief — summary within 24h so the fire survives</div>
-</div>
-<div class="cta-price">Beta Launch — <span>£99</span> (first 10 only)</div>
-<button class="btn pulse" onclick="goStage(7)">Book Your Ignition Session</button>
-<p style="font-size:13px;color:#555;margin-top:12px">One turning point. No subscription trap.</p>
-</div>
-
-<!-- STAGE 7: Booking -->
+<!-- STAGE 7: Full Report -->
 <div class="stage" id="stage7">
 <div class="kinetik-logo"><span>K</span>inetik Ignition</div>
-<h2>Your session is one click away.</h2>
-<p>Choose your preferred time below and secure your spot.</p>
-<div style="margin:24px 0">
-<a href="#" class="btn" target="_blank" style="text-decoration:none">Pick a Time — £99</a>
+<h2 id="reportHeadline" style="max-width:480px"></h2>
+<div class="score-ring">
+<svg><defs><linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#f97316"/><stop offset="100%" style="stop-color:#ef4444"/></linearGradient></defs><circle class="bg" cx="94" cy="94" r="90"/><circle class="fg" id="scoreArc2" cx="94" cy="94" r="90"/></svg>
+<div class="score-number" id="scoreNum2">0</div>
+<div class="score-label">clarity score</div>
 </div>
-<p style="font-size:13px;color:#555">Zoom or Google Meet · 60 minutes · Written summary within 24h</p>
-<button class="btn-secondary" onclick="goStage(0)">← Back to start</button>
+<div id="driftTag2" class="result-tag" style="margin-bottom:16px"></div>
+
+<div class="report-section"><h3>The Truth</h3><p id="truthFull"></p></div>
+<div class="report-section"><h3>Dream Recovery</h3><p id="dreamFull"></p></div>
+<div class="report-section"><h3>Your Lane</h3><p id="laneFull"></p></div>
+<div class="report-section"><h3>Execution Map</h3>
+<div class="execution-item"><span class="execution-label">Today:</span><span id="execTodayFull"></span></div>
+<div class="execution-item"><span class="execution-label">This week:</span><span id="execWeekFull"></span></div>
+<div class="execution-item"><span class="execution-label">This month:</span><span id="execMonthFull"></span></div>
+</div>
+
+<div class="glass" style="text-align:center">
+<p id="closingLine" style="font-size:18px;font-weight:700;color:#f97316;margin:0"></p>
+</div>
+
 <div class="footer" style="margin-top:32px">Kinetik — for people who are ready to turn possibility into reality</div>
 </div>
 
 <script>
 const answers={};
+let fullReport=null;
+const API_URL='https://kinetik-ignition.lil-ai-operator.workers.dev/generate-report';
+
 function pick(el,q,val){
 document.querySelectorAll('#'+q+' .option').forEach(o=>o.classList.remove('selected'));
 el.classList.add('selected');
@@ -164,41 +190,85 @@ answers[q]=val;
 const btn=document.getElementById('next'+q.replace('q',''));
 if(btn){btn.style.opacity='1';btn.style.pointerEvents='auto'}
 }
+
 function goStage(n){
 document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));
 const s=document.getElementById('stage'+n);
 s.classList.add('active');
 s.classList.add('fade-in');
-const total=7;
-document.getElementById('progress').style.width=(n/total*100)+'%';
-if(n===5)showResults();
+document.getElementById('progress').style.width=(n/7*100)+'%';
 }
-function showResults(){
+
+async function generateReport(){
+goStage(5);
+try{
+const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({answers})});
+const data=await res.json();
+if(data.report){fullReport=data.report;showPreview()}
+else{showFallback()}
+}catch(e){showFallback()}
+}
+
+function showPreview(){
+const r=fullReport;
+const score=r.clarityScore||50;
+// Score animation
+animateScore('scoreArc','scoreNum',score);
+document.getElementById('driftTag').textContent=r.driftProfile||'Analysing...';
+// Fill blurred preview
+document.getElementById('truthPreview').textContent=r.truth||'';
+document.getElementById('dreamPreview').textContent=r.dreamRecovery||'';
+document.getElementById('lanePreview').textContent=r.laneLock||'';
+document.getElementById('execToday').textContent=r.executionMap?.today||'';
+document.getElementById('execWeek').textContent=r.executionMap?.thisWeek||'';
+document.getElementById('execMonth').textContent=r.executionMap?.thisMonth||'';
+goStage(6);
+}
+
+function showFallback(){
 const total=Object.values(answers).reduce((a,b)=>a+b,0);
 const score=Math.max(5,Math.round((1-(total-4)/12)*100));
-const arc=document.getElementById('scoreArc');
+fullReport={clarityScore:score,driftProfile:getDriftTag(total),truth:getTruth(total),dreamRecovery:getDream(total),laneLock:getLane(total),executionMap:{today:getToday(total),thisWeek:'Choose ONE project and give it 2 focused hours',thisMonth:'Ship the first version. Imperfect counts. Perfect never ships.'},closingLine:'This can be the hour where the future stops being an idea and starts becoming a direction.'};
+showPreview();
+}
+
+function animateScore(arcId,numId,score){
+const arc=document.getElementById(arcId);
 const circ=2*Math.PI*90;
 arc.style.strokeDasharray=circ;
 arc.style.strokeDashoffset=circ-(circ*score/100);
-let num=0;
-const numEl=document.getElementById('scoreNum');
-const interval=setInterval(()=>{num+=1;if(num>=score){num=score;clearInterval(interval)}numEl.textContent=num},20);
-const tags=document.getElementById('resultTags');
-const text=document.getElementById('resultText');
-if(total<=6){
-tags.innerHTML='<span class="result-tag">Focused but drifting</span><span class="result-tag">Close to clarity</span>';
-text.textContent='You have real focus but something is pulling you off track. Ignition sharpens the signal and locks the lane.';
-}else if(total<=10){
-tags.innerHTML='<span class="result-tag">Split attention</span><span class="result-tag">High potential</span><span class="result-tag">Needs direction</span>';
-text.textContent='You are capable of more than your current output. The talent is there. The clarity is not. Ignition changes that.';
-}else if(total<=14){
-tags.innerHTML='<span class="result-tag">Running in circles</span><span class="result-tag">Dream buried under noise</span><span class="result-tag">Prime for breakthrough</span>';
-text.textContent='The fog is thick but the fire underneath is real. Ignition exists for exactly this moment.';
-}else{
-tags.innerHTML='<span class="result-tag">Maximum drift</span><span class="result-tag">Highest transformation potential</span><span class="result-tag">Ready for change</span>';
-text.textContent='You are carrying the weight of ten possible futures and living none of them. This can be the hour that changes everything.';
+let num=0;const numEl=document.getElementById(numId);
+const iv=setInterval(()=>{num+=1;if(num>=score){num=score;clearInterval(iv)}numEl.textContent=num},20);
 }
+
+function unlockReport(){
+// TODO: Replace with real Stripe checkout
+// For now, show the full report directly
+showFullReport();
 }
+
+function showFullReport(){
+const r=fullReport;
+document.getElementById('reportHeadline').textContent=r.headline||'Your Ignition Report';
+const score=r.clarityScore||50;
+animateScore('scoreArc2','scoreNum2',score);
+document.getElementById('driftTag2').textContent=r.driftProfile||'';
+document.getElementById('truthFull').textContent=r.truth||'';
+document.getElementById('dreamFull').textContent=r.dreamRecovery||'';
+document.getElementById('laneFull').textContent=r.laneLock||'';
+document.getElementById('execTodayFull').textContent=r.executionMap?.today||'';
+document.getElementById('execWeekFull').textContent=r.executionMap?.thisWeek||'';
+document.getElementById('execMonthFull').textContent=r.executionMap?.thisMonth||'';
+document.getElementById('closingLine').textContent=r.closingLine||'';
+goStage(7);
+}
+
+// Fallback generators
+function getDriftTag(t){return t<=6?'Focused but drifting':t<=10?'Split attention':t<=14?'Running in circles':'Maximum drift'}
+function getTruth(t){return t<=6?'You have real focus but something is pulling you off track.':t<=10?'Your attention is split between too many directions. The talent is there but the clarity is not.':t<=14?'The fog is thick but the fire underneath is real. You keep starting but never finishing.':'You are carrying the weight of ten possible futures and living none of them.'}
+function getDream(t){return t<=6?'You are close to something real. The dream is not lost — it is just buried under noise.':t<=10?'Somewhere under all the split attention is a version of you that knows exactly what to build.':'You have been circling for so long you forgot what the centre looks like. But it is still there.'}
+function getLane(t){return t<=6?'Lock onto your strongest project and give it everything. Kill the rest.':t<=10?'Pick the one thing that has the most real signal and go all in. Everything else is a distraction.':t<=14?'Stop starting. Pick the project closest to done and finish it. That is your lane.':'Choose ONE thing. Not the most exciting. The most REAL. The one closest to money.'}
+function getToday(t){return t<=6?'Block 2 hours. Work on your strongest project only.':t<=10?'Write down every project. Pick ONE. Delete the rest from today.':t<=14?'Close every tab. Open ONE project. Work on it for 1 hour.':'Write down what you actually want. Not what sounds good. What you WANT.'}
 </script>
 </body>
 </html>
