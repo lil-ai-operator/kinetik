@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kinetik Ignition — Bring your real life back online</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+body{font-family:'Inter',sans-serif;background:#0a0a0a;color:#f5f5f5;overflow-x:hidden;min-height:100vh}
+.stage{display:none;min-height:100vh;padding:24px;flex-direction:column;justify-content:center;align-items:center;text-align:center}
+.stage.active{display:flex}
+.progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,#f97316,#ef4444);transition:width 0.5s ease;z-index:100}
+.brand{font-size:14px;letter-spacing:4px;text-transform:uppercase;color:#666;margin-bottom:40px}
+h1{font-size:clamp(28px,7vw,52px);font-weight:900;line-height:1.1;margin-bottom:20px;background:linear-gradient(135deg,#f97316,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+h2{font-size:clamp(22px,5vw,36px);font-weight:800;line-height:1.2;margin-bottom:16px}
+p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;margin-bottom:24px}
+.btn{background:linear-gradient(135deg,#f97316,#ef4444);color:#fff;border:none;padding:16px 40px;font-size:18px;font-weight:700;border-radius:12px;cursor:pointer;transition:all 0.3s ease;margin:8px;font-family:'Inter',sans-serif}
+.btn:hover{transform:scale(1.05);box-shadow:0 8px 30px rgba(249,115,22,0.3)}
+.btn-secondary{background:transparent;border:2px solid #333;color:#aaa;padding:14px 32px;font-size:16px;font-weight:600;border-radius:12px;cursor:pointer;transition:all 0.3s ease;margin:8px;font-family:'Inter',sans-serif}
+.btn-secondary:hover{border-color:#f97316;color:#f97316}
+.btn-secondary.selected{border-color:#f97316;color:#f97316;background:rgba(249,115,22,0.1)}
+.options{display:flex;flex-direction:column;gap:12px;width:100%;max-width:400px;margin:20px 0}
+.option{background:#151515;border:2px solid #222;border-radius:12px;padding:16px 20px;cursor:pointer;transition:all 0.3s ease;text-align:left;font-size:16px;color:#ccc}
+.option:hover{border-color:#444;background:#1a1a1a}
+.option.selected{border-color:#f97316;background:rgba(249,115,22,0.08);color:#f97316}
+.option-label{font-size:12px;color:#666;margin-bottom:4px;text-transform:uppercase;letter-spacing:1px}
+.score-ring{width:180px;height:180px;border-radius:50%;border:4px solid #222;display:flex;flex-direction:column;align-items:center;justify-content:center;margin:20px auto;position:relative}
+.score-ring svg{position:absolute;top:-4px;left:-4px;width:188px;height:188px;transform:rotate(-90deg)}
+.score-ring circle{fill:none;stroke-width:4;stroke-linecap:round}
+.score-ring .bg{stroke:#222}
+.score-ring .fg{stroke:url(#grad);transition:stroke-dashoffset 1.5s ease}
+.score-number{font-size:48px;font-weight:900;background:linear-gradient(135deg,#f97316,#ef4444);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.score-label{font-size:13px;color:#666;margin-top:4px}
+.result-tag{display:inline-block;background:rgba(249,115,22,0.1);border:1px solid rgba(249,115,22,0.3);color:#f97316;padding:6px 16px;border-radius:20px;font-size:13px;font-weight:600;margin:4px}
+.fade-in{animation:fadeIn 0.6s ease}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+.pulse{animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+.kinetik-logo{font-size:24px;font-weight:900;letter-spacing:-1px;margin-bottom:8px}
+.kinetik-logo span{color:#f97316}
+.features{display:flex;flex-direction:column;gap:12px;text-align:left;max-width:400px;margin:20px 0}
+.feature{display:flex;align-items:flex-start;gap:12px;font-size:15px;color:#bbb}
+.feature-icon{font-size:20px;flex-shrink:0}
+.cta-price{font-size:14px;color:#666;margin-top:8px}
+.cta-price span{color:#f97316;font-weight:700;font-size:18px}
+.footer{margin-top:40px;font-size:12px;color:#444;letter-spacing:2px;text-transform:uppercase}
+</style>
+</head>
+<body>
+<div class="progress" id="progress"></div>
+
+<!-- STAGE 0: Landing -->
+<div class="stage active" id="stage0">
+<div class="kinetik-logo"><span>K</span>inetik</div>
+<h1>Bring your real life back online.</h1>
+<p>Answer 4 quick questions. See where you really stand. Discover what could change.</p>
+<button class="btn" onclick="goStage(1)">Start →</button>
+<div class="footer">Takes 2 minutes</div>
+</div>
+
+<!-- STAGE 1: Q1 -->
+<div class="stage" id="stage1">
+<div class="brand">Question 1 of 4</div>
+<h2>How many projects or ideas are you juggling right now?</h2>
+<div class="options" id="q1">
+<div class="option" onclick="pick(this,'q1',1)"><span class="option-label">Focused</span>1-2 — I know what I'm building</div>
+<div class="option" onclick="pick(this,'q1',2)"><span class="option-label">Split</span>3-4 — I'm torn between a few directions</div>
+<div class="option" onclick="pick(this,'q1',3)"><span class="option-label">Scattered</span>5-6 — Too many things, not enough progress</div>
+<div class="option" onclick="pick(this,'q1',4)"><span class="option-label">Overloaded</span>7+ — I've lost count and I'm exhausted</div>
+</div>
+<button class="btn" id="next1" style="opacity:0.3;pointer-events:none" onclick="goStage(2)">Next →</button>
+</div>
+
+<!-- STAGE 2: Q2 -->
+<div class="stage" id="stage2">
+<div class="brand">Question 2 of 4</div>
+<h2>When did you last feel truly clear about your direction?</h2>
+<div class="options" id="q2">
+<div class="option" onclick="pick(this,'q2',1)"><span class="option-label">Recently</span>This week — I have moments of clarity</div>
+<div class="option" onclick="pick(this,'q2',2)"><span class="option-label">Fading</span>A few weeks ago — it comes and goes</div>
+<div class="option" onclick="pick(this,'q2',3)"><span class="option-label">Lost</span>Months — I can't remember feeling certain</div>
+<div class="option" onclick="pick(this,'q2',4)"><span class="option-label">Gone</span>I'm not sure I ever really had it</div>
+</div>
+<button class="btn" id="next2" style="opacity:0.3;pointer-events:none" onclick="goStage(3)">Next →</button>
+</div>
+
+<!-- STAGE 3: Q3 -->
+<div class="stage" id="stage3">
+<div class="brand">Question 3 of 4</div>
+<h2>What's the pattern that keeps repeating?</h2>
+<div class="options" id="q3">
+<div class="option" onclick="pick(this,'q3',1)"><span class="option-label">Overthinking</span>I analyse everything and decide nothing</div>
+<div class="option" onclick="pick(this,'q3',2)"><span class="option-label">Restarting</span>I keep abandoning progress to start fresh</div>
+<div class="option" onclick="pick(this,'q3',3)"><span class="option-label">Drifting</span>I consume content but don't commit to action</div>
+<div class="option" onclick="pick(this,'q3',4)"><span class="option-label">Splitting</span>I chase every opportunity and finish none</div>
+</div>
+<button class="btn" id="next3" style="opacity:0.3;pointer-events:none" onclick="goStage(4)">Next →</button>
+</div>
+
+<!-- STAGE 4: Q4 -->
+<div class="stage" id="stage4">
+<div class="brand">Question 4 of 4</div>
+<h2>If you had one clear lane and a real plan, what would change?</h2>
+<div class="options" id="q4">
+<div class="option" onclick="pick(this,'q4',1)"><span class="option-label">Everything</span>I'd finally start building the life I actually want</div>
+<div class="option" onclick="pick(this,'q4',2)"><span class="option-label">Momentum</span>I'd stop circling and start shipping</div>
+<div class="option" onclick="pick(this,'q4',3)"><span class="option-label">Money</span>I'd focus on revenue instead of ideas</div>
+<div class="option" onclick="pick(this,'q4',4)"><span class="option-label">Peace</span>The noise would stop and I'd feel alive again</div>
+</div>
+<button class="btn" id="next4" style="opacity:0.3;pointer-events:none" onclick="goStage(5)">See my results →</button>
+</div>
+
+<!-- STAGE 5: Results -->
+<div class="stage" id="stage5">
+<div class="kinetik-logo"><span>K</span>inetik</div>
+<h2>Your Clarity Score</h2>
+<div class="score-ring">
+<svg><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#f97316"/><stop offset="100%" style="stop-color:#ef4444"/></linearGradient></defs><circle class="bg" cx="94" cy="94" r="90"/><circle class="fg" id="scoreArc" cx="94" cy="94" r="90"/></svg>
+<div class="score-number" id="scoreNum">0</div>
+<div class="score-label">out of 100</div>
+</div>
+<div id="resultTags"></div>
+<p id="resultText"></p>
+<button class="btn" onclick="goStage(6)">See how Ignition changes this →</button>
+</div>
+
+<!-- STAGE 6: The Pitch -->
+<div class="stage" id="stage6">
+<div class="kinetik-logo"><span>K</span>inetik Ignition</div>
+<h2>60 minutes to change your direction.</h2>
+<p>One session. We burn the fog, recover the dream, lock the lane, and build the map.</p>
+<div class="features">
+<div class="feature"><span class="feature-icon">🎯</span>Clarity Extraction — what really matters beneath the noise</div>
+<div class="feature"><span class="feature-icon">✨</span>Dream Recovery — reconnect to the future you actually want</div>
+<div class="feature"><span class="feature-icon">🔒</span>Lane Lock — kill dead options, commit to the strongest path</div>
+<div class="feature"><span class="feature-icon">🗺️</span>Execution Map — today, this week, this month — concrete moves</div>
+<div class="feature"><span class="feature-icon">📝</span>Written Debrief — summary within 24h so the fire survives</div>
+</div>
+<div class="cta-price">Beta Launch — <span>£99</span> (first 10 only)</div>
+<button class="btn pulse" onclick="goStage(7)">Book Your Ignition Session</button>
+<p style="font-size:13px;color:#555;margin-top:12px">One turning point. No subscription trap.</p>
+</div>
+
+<!-- STAGE 7: Booking -->
+<div class="stage" id="stage7">
+<div class="kinetik-logo"><span>K</span>inetik Ignition</div>
+<h2>Your session is one click away.</h2>
+<p>Choose your preferred time below and secure your spot.</p>
+<div style="margin:24px 0">
+<a href="#" class="btn" target="_blank" style="text-decoration:none">Pick a Time — £99</a>
+</div>
+<p style="font-size:13px;color:#555">Zoom or Google Meet · 60 minutes · Written summary within 24h</p>
+<button class="btn-secondary" onclick="goStage(0)">← Back to start</button>
+<div class="footer" style="margin-top:32px">Kinetik — for people who are ready to turn possibility into reality</div>
+</div>
+
+<script>
+const answers={};
+function pick(el,q,val){
+document.querySelectorAll('#'+q+' .option').forEach(o=>o.classList.remove('selected'));
+el.classList.add('selected');
+answers[q]=val;
+const btn=document.getElementById('next'+q.replace('q',''));
+if(btn){btn.style.opacity='1';btn.style.pointerEvents='auto'}
+}
+function goStage(n){
+document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));
+const s=document.getElementById('stage'+n);
+s.classList.add('active');
+s.classList.add('fade-in');
+const total=7;
+document.getElementById('progress').style.width=(n/total*100)+'%';
+if(n===5)showResults();
+}
+function showResults(){
+const total=Object.values(answers).reduce((a,b)=>a+b,0);
+const score=Math.max(5,Math.round((1-(total-4)/12)*100));
+const arc=document.getElementById('scoreArc');
+const circ=2*Math.PI*90;
+arc.style.strokeDasharray=circ;
+arc.style.strokeDashoffset=circ-(circ*score/100);
+let num=0;
+const numEl=document.getElementById('scoreNum');
+const interval=setInterval(()=>{num+=1;if(num>=score){num=score;clearInterval(interval)}numEl.textContent=num},20);
+const tags=document.getElementById('resultTags');
+const text=document.getElementById('resultText');
+if(total<=6){
+tags.innerHTML='<span class="result-tag">Focused but drifting</span><span class="result-tag">Close to clarity</span>';
+text.textContent='You have real focus but something is pulling you off track. Ignition sharpens the signal and locks the lane.';
+}else if(total<=10){
+tags.innerHTML='<span class="result-tag">Split attention</span><span class="result-tag">High potential</span><span class="result-tag">Needs direction</span>';
+text.textContent='You are capable of more than your current output. The talent is there. The clarity is not. Ignition changes that.';
+}else if(total<=14){
+tags.innerHTML='<span class="result-tag">Running in circles</span><span class="result-tag">Dream buried under noise</span><span class="result-tag">Prime for breakthrough</span>';
+text.textContent='The fog is thick but the fire underneath is real. Ignition exists for exactly this moment.';
+}else{
+tags.innerHTML='<span class="result-tag">Maximum drift</span><span class="result-tag">Highest transformation potential</span><span class="result-tag">Ready for change</span>';
+text.textContent='You are carrying the weight of ten possible futures and living none of them. This can be the hour that changes everything.';
+}
+}
+</script>
+</body>
+</html>
