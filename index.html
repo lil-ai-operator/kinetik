@@ -17,9 +17,6 @@ h2{font-size:clamp(22px,5vw,36px);font-weight:800;line-height:1.2;margin-bottom:
 p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;margin-bottom:24px}
 .btn{background:linear-gradient(135deg,#f97316,#ef4444);color:#fff;border:none;padding:16px 40px;font-size:18px;font-weight:700;border-radius:12px;cursor:pointer;transition:all 0.3s ease;margin:8px;font-family:'Inter',sans-serif}
 .btn:hover{transform:scale(1.05);box-shadow:0 8px 30px rgba(249,115,22,0.3)}
-.btn:disabled{opacity:0.5;cursor:not-allowed;transform:none}
-.btn-secondary{background:transparent;border:2px solid #333;color:#aaa;padding:14px 32px;font-size:16px;font-weight:600;border-radius:12px;cursor:pointer;transition:all 0.3s ease;margin:8px;font-family:'Inter',sans-serif}
-.btn-secondary:hover{border-color:#f97316;color:#f97316}
 .options{display:flex;flex-direction:column;gap:12px;width:100%;max-width:400px;margin:20px 0}
 .option{background:#151515;border:2px solid #222;border-radius:12px;padding:16px 20px;cursor:pointer;transition:all 0.3s ease;text-align:left;font-size:16px;color:#ccc}
 .option:hover{border-color:#444;background:#1a1a1a}
@@ -39,18 +36,13 @@ p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;ma
 @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
 .kinetik-logo{font-size:24px;font-weight:900;letter-spacing:-1px;margin-bottom:8px}
 .kinetik-logo span{color:#f97316}
-.features{display:flex;flex-direction:column;gap:12px;text-align:left;max-width:400px;margin:20px 0}
-.feature{display:flex;align-items:flex-start;gap:12px;font-size:15px;color:#bbb}
-.feature-icon{font-size:20px;flex-shrink:0}
-.footer{margin-top:40px;font-size:12px;color:#444;letter-spacing:2px;text-transform:uppercase}
 .report-section{text-align:left;max-width:480px;width:100%;margin:12px 0;padding:16px;background:#151515;border-radius:12px;border-left:3px solid #f97316}
 .report-section h3{font-size:14px;color:#f97316;text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
-.report-section p{font-size:15px;color:#ccc;margin:0;line-height:1.5}
+.report-section p{font-size:15px;color:#ccc;margin:0;line-height:1.6;max-width:100%}
 .execution-item{display:flex;align-items:flex-start;gap:8px;margin:8px 0;font-size:14px;color:#bbb}
 .execution-label{color:#f97316;font-weight:700;flex-shrink:0}
-.loading-dots::after{content:'';animation:dots 1.5s infinite}
-@keyframes dots{0%{content:''}25%{content:'.'}50%{content:'..'}75%{content:'...'}100%{content:''}}
 .glass{background:rgba(255,255,255,0.03);backdrop-filter:blur(10px);border:1px solid rgba(255,255,255,0.08);border-radius:16px;padding:24px;margin:16px 0;max-width:480px;width:100%}
+.footer{margin-top:40px;font-size:12px;color:#444;letter-spacing:2px;text-transform:uppercase}
 </style>
 </head>
 <body>
@@ -62,10 +54,10 @@ p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;ma
 <h1>Bring your real life back online.</h1>
 <p>Answer 4 questions. Get an AI-powered clarity report with your drift profile, lane recommendation, and execution map.</p>
 <button class="btn" onclick="goStage(1)">Start →</button>
-<div class="footer">Takes 2 minutes · AI-generated report</div>
+<div class="footer">Takes 2 minutes</div>
 </div>
 
-<!-- STAGE 1-4: Questions -->
+<!-- STAGE 1-4: Questions (same as before) -->
 <div class="stage" id="stage1">
 <div class="brand">Question 1 of 4</div>
 <h2>How many projects or ideas are you juggling right now?</h2>
@@ -111,78 +103,35 @@ p{font-size:clamp(16px,3.5vw,20px);color:#aaa;line-height:1.6;max-width:480px;ma
 <div class="option" onclick="pick(this,'q4',3)"><span class="option-label">Money</span>I'd focus on revenue instead of ideas</div>
 <div class="option" onclick="pick(this,'q4',4)"><span class="option-label">Peace</span>The noise would stop and I'd feel alive again</div>
 </div>
-<button class="btn" id="next4" style="opacity:0.3;pointer-events:none" onclick="generateReport()">Generate my Ignition report →</button>
+<button class="btn" id="next4" style="opacity:0.3;pointer-events:none" onclick="generateReport()">Generate my report →</button>
 </div>
 
-<!-- STAGE 5: Loading -->
+<!-- STAGE 5: Results -->
 <div class="stage" id="stage5">
 <div class="kinetik-logo"><span>K</span>inetik</div>
-<h2>Analysing your answers<span class="loading-dots"></span></h2>
-<p>Our AI is building your personalised clarity report.</p>
-</div>
-
-<!-- STAGE 6: Preview + Paywall -->
-<div class="stage" id="stage6">
-<div class="kinetik-logo"><span>K</span>inetik Ignition Report</div>
+<h2 id="reportHeadline"></h2>
 <div class="score-ring">
 <svg><defs><linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#f97316"/><stop offset="100%" style="stop-color:#ef4444"/></linearGradient></defs><circle class="bg" cx="94" cy="94" r="90"/><circle class="fg" id="scoreArc" cx="94" cy="94" r="90"/></svg>
 <div class="score-number" id="scoreNum">0</div>
 <div class="score-label">clarity score</div>
 </div>
 <div id="driftTag" class="result-tag" style="margin-bottom:16px"></div>
-
-<div class="glass" style="position:relative;overflow:hidden">
-<div style="filter:blur(4px);opacity:0.6;pointer-events:none;user-select:none" id="blurredReport">
-<div class="report-section"><h3>The Truth</h3><p id="truthPreview">Loading...</p></div>
-<div class="report-section"><h3>Dream Recovery</h3><p id="dreamPreview">Loading...</p></div>
-<div class="report-section"><h3>Your Lane</h3><p id="lanePreview">Loading...</p></div>
+<div class="report-section"><h3>The Truth</h3><p id="truth"></p></div>
+<div class="report-section"><h3>Dream Recovery</h3><p id="dream"></p></div>
+<div class="report-section"><h3>Your Lane</h3><p id="lane"></p></div>
 <div class="report-section"><h3>Execution Map</h3>
-<div class="execution-item"><span class="execution-label">Today:</span><span id="execToday">Loading...</span></div>
-<div class="execution-item"><span class="execution-label">This week:</span><span id="execWeek">Loading...</span></div>
-<div class="execution-item"><span class="execution-label">This month:</span><span id="execMonth">Loading...</span></div>
+<div class="execution-item"><span class="execution-label">Today:</span><span id="execToday"></span></div>
+<div class="execution-item"><span class="execution-label">This week:</span><span id="execWeek"></span></div>
+<div class="execution-item"><span class="execution-label">This month:</span><span id="execMonth"></span></div>
 </div>
-</div>
-<div style="position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,10,10,0.7);backdrop-filter:blur(2px);border-radius:16px;z-index:10">
-<h2 style="margin-bottom:8px">Unlock your full report</h2>
-<p style="font-size:14px;color:#888;margin-bottom:16px">Your personalised AI clarity report is ready</p>
-<button class="btn pulse" onclick="unlockReport()">Unlock Full Report — £99 <span style=\"font-size:12px;opacity:0.7\">(Beta · Click to test)</span></button>
-<p style="font-size:12px;color:#555;margin-top:8px">One-time payment · Instant access</p>
-</div>
-</div>
-</div>
-
-<!-- STAGE 7: Full Report -->
-<div class="stage" id="stage7">
-<div class="kinetik-logo"><span>K</span>inetik Ignition</div>
-<h2 id="reportHeadline" style="max-width:480px"></h2>
-<div class="score-ring">
-<svg><defs><linearGradient id="grad2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#f97316"/><stop offset="100%" style="stop-color:#ef4444"/></linearGradient></defs><circle class="bg" cx="94" cy="94" r="90"/><circle class="fg" id="scoreArc2" cx="94" cy="94" r="90"/></svg>
-<div class="score-number" id="scoreNum2">0</div>
-<div class="score-label">clarity score</div>
-</div>
-<div id="driftTag2" class="result-tag" style="margin-bottom:16px"></div>
-
-<div class="report-section"><h3>The Truth</h3><p id="truthFull"></p></div>
-<div class="report-section"><h3>Dream Recovery</h3><p id="dreamFull"></p></div>
-<div class="report-section"><h3>Your Lane</h3><p id="laneFull"></p></div>
-<div class="report-section"><h3>Execution Map</h3>
-<div class="execution-item"><span class="execution-label">Today:</span><span id="execTodayFull"></span></div>
-<div class="execution-item"><span class="execution-label">This week:</span><span id="execWeekFull"></span></div>
-<div class="execution-item"><span class="execution-label">This month:</span><span id="execMonthFull"></span></div>
-</div>
-
 <div class="glass" style="text-align:center">
 <p id="closingLine" style="font-size:18px;font-weight:700;color:#f97316;margin:0"></p>
 </div>
-
-<div class="footer" style="margin-top:32px">Kinetik — for people who are ready to turn possibility into reality</div>
+<div class="footer">Kinetik Ignition — for people who are ready to turn possibility into reality</div>
 </div>
 
 <script>
 const answers={};
-let fullReport=null;
-const API_URL=''; // Will be set when backend is deployed
-const TEST_MODE=true; // Bypasses payment for testing
 
 function pick(el,q,val){
 document.querySelectorAll('#'+q+' .option').forEach(o=>o.classList.remove('selected'));
@@ -197,83 +146,181 @@ document.querySelectorAll('.stage').forEach(s=>s.classList.remove('active'));
 const s=document.getElementById('stage'+n);
 s.classList.add('active');
 s.classList.add('fade-in');
-document.getElementById('progress').style.width=(n/7*100)+'%';
+document.getElementById('progress').style.width=(n/5*100)+'%';
 }
 
-async function generateReport(){
-goStage(5);
-try{
-const res=await fetch(API_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({answers})});
-const data=await res.json();
-if(data.report){fullReport=data.report;showPreview()}
-else{showFallback()}
-}catch(e){showFallback()}
-}
-
-function showPreview(){
-const r=fullReport;
-const score=r.clarityScore||50;
-// Score animation
-animateScore('scoreArc','scoreNum',score);
-document.getElementById('driftTag').textContent=r.driftProfile||'Analysing...';
-// Fill blurred preview
-document.getElementById('truthPreview').textContent=r.truth||'';
-document.getElementById('dreamPreview').textContent=r.dreamRecovery||'';
-document.getElementById('lanePreview').textContent=r.laneLock||'';
-document.getElementById('execToday').textContent=r.executionMap?.today||'';
-document.getElementById('execWeek').textContent=r.executionMap?.thisWeek||'';
-document.getElementById('execMonth').textContent=r.executionMap?.thisMonth||'';
-goStage(6);
-}
-
-function showFallback(){
-const total=Object.values(answers).reduce((a,b)=>a+b,0);
-const score=Math.max(5,Math.round((1-(total-4)/12)*100));
-fullReport={clarityScore:score,driftProfile:getDriftTag(total),truth:getTruth(total),dreamRecovery:getDream(total),laneLock:getLane(total),executionMap:{today:getToday(total),thisWeek:'Choose ONE project and give it 2 focused hours',thisMonth:'Ship the first version. Imperfect counts. Perfect never ships.'},closingLine:'This can be the hour where the future stops being an idea and starts becoming a direction.'};
-showPreview();
-}
-
-function animateScore(arcId,numId,score){
-const arc=document.getElementById(arcId);
+function animateScore(score){
+const arc=document.getElementById('scoreArc');
 const circ=2*Math.PI*90;
 arc.style.strokeDasharray=circ;
 arc.style.strokeDashoffset=circ-(circ*score/100);
-let num=0;const numEl=document.getElementById(numId);
+let num=0;const numEl=document.getElementById('scoreNum');
 const iv=setInterval(()=>{num+=1;if(num>=score){num=score;clearInterval(iv)}numEl.textContent=num},20);
 }
 
-function unlockReport(){
-if(TEST_MODE){
-showFullReport();
-return;
-}
-// TODO: Stripe Checkout redirect
-// Stripe.redirectToCheckout({sessionId:'...'})
-showFullReport();
+function generateReport(){
+const q1=answers.q1,q2=answers.q2,q3=answers.q3,q4=answers.q4;
+const total=q1+q2+q3+q4;
+const score=Math.max(8,Math.round((1-(total-4)/12)*92));
+
+// Build profile from individual patterns
+const profile=buildProfile(q1,q2,q3,q4);
+
+goStage(5);
+animateScore(score);
+document.getElementById('driftTag').textContent=profile.tag;
+document.getElementById('reportHeadline').textContent=profile.headline;
+document.getElementById('truth').textContent=profile.truth;
+document.getElementById('dream').textContent=profile.dream;
+document.getElementById('lane').textContent=profile.lane;
+document.getElementById('execToday').textContent=profile.today;
+document.getElementById('execWeek').textContent=profile.week;
+document.getElementById('execMonth').textContent=profile.month;
+document.getElementById('closingLine').textContent=profile.closing;
 }
 
-function showFullReport(){
-const r=fullReport;
-document.getElementById('reportHeadline').textContent=r.headline||'Your Ignition Report';
-const score=r.clarityScore||50;
-animateScore('scoreArc2','scoreNum2',score);
-document.getElementById('driftTag2').textContent=r.driftProfile||'';
-document.getElementById('truthFull').textContent=r.truth||'';
-document.getElementById('dreamFull').textContent=r.dreamRecovery||'';
-document.getElementById('laneFull').textContent=r.laneLock||'';
-document.getElementById('execTodayFull').textContent=r.executionMap?.today||'';
-document.getElementById('execWeekFull').textContent=r.executionMap?.thisWeek||'';
-document.getElementById('execMonthFull').textContent=r.executionMap?.thisMonth||'';
-document.getElementById('closingLine').textContent=r.closingLine||'';
-goStage(7);
+function buildProfile(q1,q2,q3,q4){
+// q1: projects (1=focused, 4=overloaded)
+// q2: clarity (1=recent, 4=gone)
+// q3: pattern (1=overthink, 2=restart, 3=drift, 4=split)
+// q4: desire (1=everything, 2=momentum, 3=money, 4=peace)
+
+const scattered=q1>=3;
+const lost=q2>=3;
+const patternMap={1:'overthinker',2:'restarter',3:'drifter',4:'splitter'};
+const pattern=patternMap[q3];
+
+// HEADLINE
+const headlines={
+overthinker:scattered?'Your brain is a war zone and the casualties are your actual plans':'You can see every possible future — except the one right in front of you',
+restarter:scattered?'You keep burning the house down to get a fresh start on the foundation':'You are always three days away from the perfect restart that never comes',
+drifter:scattered?'You have been wallpapering over the cracks with other people\'s content':'You are running on borrowed direction and the lease is almost up',
+splitter:scattered?'You are trying to win ten races at once and finishing none of them':'Your ambition is a firehose pointed at every direction except forward'
+};
+
+// TRUTH — specific to their combination
+const truths={};
+
+// Overthinker truths
+truths['overthinker']={
+focused:'You know what you want. The problem is not clarity — it is conviction. You keep second-guessing the lane you already chose because you can see the alternatives too clearly. That is not wisdom. That is fear wearing a thinking cap.',
+split:'You have the intelligence to see every angle and the curse of never being able to pick one. Three or four projects is not diversification — it is doubt with a spreadsheet. You think you are being strategic. You are actually being avoidant.',
+scattered:'Five or more projects and you still analyse each one like it deserves a thesis. It does not. Your overthinking is not protecting you from failure — it is guaranteeing you never ship. The analysis paralysis is the prison you built for yourself.',
+overloaded:'You are drowning in ideas and your defence mechanism is to think harder about all of them. That is like putting out a fire with gasoline. Seven plus projects is not ambition — it is avoidance dressed up as productivity. You are not building. You are deliberating.'
+};
+
+// Restarter truths
+truths['restarter']={
+focused:'You actually have focus — you just do not trust it past week two. The moment progress gets hard or boring, you convince yourself a fresh start would fix everything. It would not. The same you shows up to every new project. Fix the pattern, not the project.',
+split:'You restart because starting feels like possibility. But possibility without follow-through is just entertainment. Every time you abandon progress for a clean slate, you are training yourself to quit when it matters. That is the opposite of building.',
+scattered:'You keep restarting because you think the problem was the project. It was not. The problem is that you have never learned to push through the messy middle. Every project has one. Restarting just guarantees you never see what is on the other side.',
+overloaded:'Seven plus projects and you keep restarting them. That is not a pipeline — that is a graveyard. Every unfinished project is proof that the problem is not the idea. It is the commitment. You are not lacking good ideas. You are lacking the stomach to finish one.'
+};
+
+// Drifter truths
+truths['drifter']={
+focused:'You know your direction but you keep filling the gaps with other people\'s advice, frameworks, and content. You are consuming direction instead of creating it. The next podcast will not save you. The next course will not fix it. You already know enough. Start building.',
+split:'You drift between three or four things consuming content about all of them, convinced that the next article or video will finally make it click. It will not. Clarity does not come from more information. It comes from making a decision and acting on it with full weight.',
+scattered:'You have been absorbing other people\'s blueprints for so long you forgot you were supposed to build your own house. Five plus directions and all the content in the world will not help you pick one. Action is the only filter that works. Pick something. Do it. See what happens.',
+overloaded:'You are consuming content about seven different futures hoping one of them will feel certain enough to commit to. That is not research. That is procrastination in a productivity costume. You do not need more information. You need to pick one thing and let the rest burn.'
+};
+
+// Splitter truths
+truths['splitter']={
+focused:'Even with one or two projects, you are eyeing every opportunity that passes by. You think you are keeping your options open. You are actually keeping your success at bay. The lane you are in is the right one. Stop looking over the fence.',
+split:'You are chasing three or four opportunities like they are all equally viable. They are not. One of them has real signal. The rest are noise. But you will not know which is which until you commit to one long enough to see results. That takes longer than a week.',
+scattered:'Five or more directions and you treat every new one like it might be the one. It is not. The one is the thing you would be doing right now if you were not distracted by four other things. You already know what it is. You are just afraid to bet on it.',
+overloaded:'Seven plus lanes and you still cannot commit because you think commitment means closing doors. It does. That is the point. Every door you close is energy redirected to the one that matters. You are not missing out. You are finally showing up.'
+};
+
+// DREAM RECOVERY
+const dreams={
+1:{ // "Everything"
+focused:'What you actually want is not everything. It is one thing done so well that it changes your whole life. You can feel it — there is a version of your future where you are fully alive, not juggling, not guessing, just building something real. That life is closer than you think.',
+split:'Underneath all the split attention is a person who wants to wake up and know exactly what they are building today. Not because someone told them. Because they chose it. That feeling of total alignment — direction plus conviction plus momentum — that is what you are actually hungry for.',
+scattered:'The life you want is not more projects or better ideas. It is the feeling of being so locked in that nothing can shake you. Where your direction is so clear that doubt becomes irrelevant. You have tasted this before. You know it exists. It is waiting for you to stop scattering and start committing.',
+overloaded:'You want to feel like your life has a centre again. A gravitational pull that makes every decision easy because you know where you are going. Right now you are orbiting ten different suns. You need to pick one and let it pull you in. That is not giving up. That is growing up.'
+},
+2:{ // "Momentum"
+focused:'You do not want more ideas. You want the feeling of shipping something real. The high of watching something you built actually exist in the world. That is not a fantasy. That is what happens when you stop planning and start finishing.',
+split:'You want to stop being a person who starts things and become a person who finishes them. That identity shift — from dreamer to builder — is the most powerful thing that can happen to you. It starts with one project that you refuse to abandon.',
+scattered:'The momentum you crave is not going to come from a new idea. It is going to come from finishing something. Anything. The moment you ship, everything changes. Not because the thing is perfect. Because you proved to yourself that you can.',
+overloaded:'You want to feel progress so badly that you keep starting new things to get that rush. But real momentum is not the high of starting. It is the quiet power of compounding effort on one thing over time. That is the version you have not tried yet.'
+},
+3:{ // "Money"
+focused:'You know exactly what would make money. You have probably known for a while. The gap is not knowledge — it is execution. You are sitting on a revenue path and talking yourself out of it every day. Stop strategising. Start selling.',
+split:'The money is in ONE of those three or four projects. Probably the one you keep deprioritising because it feels too simple or too obvious. The simplest path to revenue is pick the thing closest to a customer, build the smallest version, and put a price on it.',
+scattered:'Five plus projects and no revenue because you never stay long enough to actually monetise anything. Money does not come from breadth. It comes from depth. Pick the thing that has the clearest path to a pound and give it everything until that pound arrives.',
+overloaded:'You think the money problem is not having the right idea. It is not. It is not finishing any of them long enough to let the money find you. Revenue is a byproduct of sustained focus on one valuable thing. Pick the most valuable one. Stay.'
+},
+4:{ // "Peace"
+focused:'The peace you want is not going to come from fewer projects. It is going to come from trusting the one you are on. Right now you have focus but no faith. You keep wondering if you chose right. You did. Now prove it by staying.',
+split:'The noise in your head is not from having too many ideas. It is from refusing to kill any of them. Peace does not come from keeping all your options open. It comes from closing the wrong doors so hard that you forget they existed.',
+scattered:'You want the noise to stop. It stops the moment you commit to one thing with everything you have. Not because the other things disappear. Because they stop mattering. That is what peace actually feels like. One lane. Full weight. No apology.',
+overloaded:'The exhaustion is not from working too hard. It is from spreading too thin. Peace is the opposite of what you are doing right now. It is one direction, one project, one priority. Everything else gets a firm no. That is not giving up. That is survival.'
+}
+};
+
+// LANE LOCK
+const lanes={
+overthinker:'Your lane is the project that is closest to done. Not the most exciting. Not the most strategic. The one that is 70% finished and waiting for you to stop deliberating and start executing. Pick it. Finish it. Let the momentum from that completion carry you into the next one.',
+restarter:'Your lane is whatever you were working on 14 days ago before you got the urge to start fresh. That project was not broken. Your commitment was. Go back. Not because it is perfect. Because finishing it will teach you something starting over never will.',
+drifter:'Your lane is the thing you already know how to do but have been avoiding because it feels too simple or too obvious. You do not need another course. You do not need another framework. You need to do the thing you already know works and do it with full conviction.',
+splitter:'Your lane is the project that has the strongest real-world signal — not the most exciting one, not the newest one, the one with actual customers, actual feedback, or the shortest path to revenue. Kill everything else. Not forever. Just until this one is real.'
+};
+
+// EXECUTION MAP
+const todayActions={
+overthinker:scattered?'Pick your strongest project. Set a timer for 60 minutes. Work on ONLY that. No tabs, no notes, no alternatives.':'Write down the ONE decision you have been avoiding about your main project. Make it right now. Move.',
+restarter:'Open the last project you abandoned before this one. Spend 30 minutes on it. Do not start anything new. Just continue.',
+drifter:'Close every browser tab except ONE project. Work on it for 60 minutes. No content, no research, no inspiration. Just building.',
+splitter:'Write down every project you are running. Pick the ONE closest to revenue or completion. Delete the rest from today.'
+};
+
+const weekActions={
+overthinker:'Ship one tiny thing. A draft. A prototype. A first version. Imperfect and real beats perfect and imaginary every single time.',
+restarter:'Go seven days without starting anything new. If a new idea comes, write it in a parking lot doc. Do not touch it. Finish what you have.',
+drifter:'Unsubscribe from every newsletter, podcast, and YouTube channel that is not directly related to your ONE project. Starve the drift.',
+splitter:'Tell one person which project you are committing to this week. Accountability kills the urge to split. Say it out loud.'
+};
+
+const monthActions={
+overthinker:'Get your project to a state where someone else can see it. A landing page. A beta. A first customer. Visibility kills overthinking.',
+restarter:'Complete one full build cycle. Ideation does not count. Shipping counts. If you have not shipped by month end, the problem is not the project.',
+drifter:'Replace one hour of daily content consumption with one hour of building. By month end you will have 30 hours of actual progress.',
+splitter:'One project. One month. No new projects, no new ideas, no new directions. If you finish early, go deeper on the same one.'
+};
+
+// CLOSING LINES
+const closings={
+focused:'You already have what most people are searching for — focus. Now stop second-guessing it and build the thing that proves you were right all along.',
+split:'The cost of keeping all your options open is never actually choosing one. Today is the day that changes.',
+scattered:'You are one decision away from a completely different trajectory. Make it. Then refuse to unmake it.',
+overloaded:'The version of you that has it all figured out is not the one with more ideas. It is the one with fewer. Be that version today.'
+};
+
+const focusKey=scattered?(q1===4?'overloaded':'scattered'):(q1===2?'split':'focused');
+const desireMap={1:1,2:2,3:3,4:4};
+
+return{
+tag:tag(q1,q2,q3),
+headline:headlines[pattern],
+truth:truths[pattern][focusKey],
+dream:dreams[q4][focusKey],
+lane:lanes[pattern],
+today:todayActions[pattern],
+week:weekActions[pattern],
+month:monthActions[pattern],
+closing:closings[focusKey]
+};
 }
 
-// Fallback generators
-function getDriftTag(t){return t<=6?'Focused but drifting':t<=10?'Split attention':t<=14?'Running in circles':'Maximum drift'}
-function getTruth(t){return t<=6?'You have real focus but something is pulling you off track.':t<=10?'Your attention is split between too many directions. The talent is there but the clarity is not.':t<=14?'The fog is thick but the fire underneath is real. You keep starting but never finishing.':'You are carrying the weight of ten possible futures and living none of them.'}
-function getDream(t){return t<=6?'You are close to something real. The dream is not lost — it is just buried under noise.':t<=10?'Somewhere under all the split attention is a version of you that knows exactly what to build.':'You have been circling for so long you forgot what the centre looks like. But it is still there.'}
-function getLane(t){return t<=6?'Lock onto your strongest project and give it everything. Kill the rest.':t<=10?'Pick the one thing that has the most real signal and go all in. Everything else is a distraction.':t<=14?'Stop starting. Pick the project closest to done and finish it. That is your lane.':'Choose ONE thing. Not the most exciting. The most REAL. The one closest to money.'}
-function getToday(t){return t<=6?'Block 2 hours. Work on your strongest project only.':t<=10?'Write down every project. Pick ONE. Delete the rest from today.':t<=14?'Close every tab. Open ONE project. Work on it for 1 hour.':'Write down what you actually want. Not what sounds good. What you WANT.'}
+function tag(q1,q2,q3){
+const patterns={1:'Overthinker',2:'Serial Restarter',3:'Passive Drifter',4:'Lane Splitter'};
+const states=q1>=4?'in Overload':q1===3?'Scattered':q1===2?'Split Focus':'Focused but';
+const clarity=q2>=4?' — Lost':q2===3?' — Fading':'';
+return patterns[q3]+' | '+states+clarity;
+}
 </script>
 </body>
 </html>
